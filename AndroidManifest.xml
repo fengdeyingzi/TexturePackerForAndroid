@@ -24,6 +24,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+		<!-- 适配全面屏 -->
+		<meta-data android:name="android.max_aspect" android:value="2.1"/>
     </application>
 
 	<uses-permission android:name="android.permission.INTERNET" /><!-- 访问网络连接，可能产生GPRS流量 -->
