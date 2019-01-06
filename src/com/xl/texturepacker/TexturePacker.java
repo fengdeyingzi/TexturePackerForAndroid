@@ -35,7 +35,7 @@ public class TexturePacker
 		int x,y;
 		int width;
 		int height;
-		
+		boolean isNine;
 		public Texture(String name){
 			BitmapFactory.Options options = getImageWH(name);
 			this.width = options.outWidth;
@@ -44,11 +44,65 @@ public class TexturePacker
 			this.y=0;
 			this.index = -1;
 			this.filename = name;
+			if(isNine()){
+				this.width-=2;
+				this.height-=2;
+			}
+			
+		}
+		
+		public boolean isNine(){
+			String temp = this.filename.toLowerCase();
+			if(temp.endsWith(".9.png")){
+				return true;
+			}
+			return false;
+		}
+		
+		//获取点9图矩形区域
+		public Rect getNineRect(){
+			int x=0,y=0,w=0,h=0;
+			Bitmap bitmap = BitmapFactory.decodeFile(filename);
+			int type=0;
+			for(int ix=1;ix<bitmap.getWidth();ix++){
+				//Log.e("","颜色："+bitmap.getPixel(ix,0)+"\n");
+				if(bitmap.getPixel(ix,0)!=0x000000){
+					if(type==0){
+					x=ix;
+					w=1;
+					type=1;
+					}
+					else if(type==1){
+					w++;
+					}
+				}
+			}
+			type=0;
+			for(int iy=1;iy<bitmap.getHeight();iy++){
+				if(bitmap.getPixel(0,iy)!=0x000000){
+					if(type==0){
+						y=iy;
+						h=1;
+						type=1;
+					}
+					else if(type==1){
+						h++;
+					}
+				}
+			}
+			return new Rect(x-1,y-1,bitmap.getWidth()- (x+w+1)-1,bitmap.getHeight() - (y+h+1)-1);
 		}
 
 		public Bitmap getBitmap()
 		{
-			Bitmap bitmap = BitmapFactory.decodeFile(filename);
+			Bitmap temp = BitmapFactory.decodeFile(filename);
+			if(isNine()){
+				temp = temp.createBitmap(temp,1,1,temp.getWidth()-2,temp.getHeight()-2);
+			}
+			//bitmap.setConfig(Bitmap.Config.ARGB_8888);
+			Bitmap bitmap = Bitmap.createBitmap(temp.getWidth(),temp.getHeight(),Bitmap.Config.ARGB_8888);
+		    Canvas canvas = new Canvas(bitmap);
+			canvas.drawBitmap(temp,0,0,new Paint());
 			return bitmap;
 		}
 		
@@ -73,8 +127,11 @@ public class TexturePacker
 		
 		public String getName(){
 			String name = new File(this.filename).getName();
-			
 			int endIndex = name.lastIndexOf(".");
+			if(isNine()){
+				endIndex = name.lastIndexOf(".9");
+			}
+			
 			if(this.index>=0)
 				endIndex = name.lastIndexOf("_");
 			if(endIndex>0)
@@ -474,9 +531,17 @@ public class TexturePacker
 			builder.append("  rotate: false\n");
 			builder.append("  xy: "+texture.getX()+", "+texture.getY()+"\n");
 			builder.append("  size: "+texture.getWidth()+", "+texture.getHeight()+"\n");
+			//点9图
+			if(texture.isNine()){
+				Rect rect = texture.getNineRect();
+				builder.append("  split: "+ rect.left+", "+rect.top+", "+ (rect.right) + ", "+(rect.bottom)+"\n");
+				builder.append("  pad: "+ rect.left+", "+rect.top+", "+ (rect.right) + ", "+(rect.bottom)+"\n");
+			}
+			
 			builder.append("  orig: "+texture.getWidth()+", "+texture.getHeight()+"\n");
 			builder.append("  offset: 0, 0\n");
 			builder.append("  index: "+texture.getIndex()+"\n");
+			
 		}
 		
 		if(name==null || name.length()==0)return false;
@@ -575,12 +640,30 @@ public class TexturePacker
 		return 0;
 	}
 	
+	//判断图片是否为点9图
+	private boolean isNine(String name){
+		String temp = name.toLowerCase();
+		//识别点九图
+		boolean isNine=false;
+		if(temp.endsWith(".9.png")){
+			isNine = true;
+		}
+		return isNine;
+	}
+	
 	//检测文件名是否符合序列图片规则
 	private boolean isPNGList(String name)
 	{
 		int type=0;
+		String temp = name.toLowerCase();
+		//识别点九图
+		boolean isNine=false;
+		if(temp.endsWith(".9.png")){
+			isNine = true;
+		}
+		int endlength = (isNine)? name.length()-4:name.length();
 		PNGWHILE:
-		for(int i=name.length()-1;i>0;i--)
+		for(int i=endlength-1;i>0;i--)
 		{
 			char c=name.charAt(i);
 		    switch(type){
