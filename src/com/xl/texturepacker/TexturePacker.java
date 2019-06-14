@@ -90,7 +90,7 @@ public class TexturePacker
 					}
 				}
 			}
-			return new Rect(x-1,y-1,bitmap.getWidth()- (x+w+1)-1,bitmap.getHeight() - (y+h+1)-1);
+			return new Rect(x-1,y-1,bitmap.getWidth()- (x+w+1),bitmap.getHeight() - (y+h+1));
 		}
 
 		public Bitmap getBitmap()
@@ -534,7 +534,7 @@ public class TexturePacker
 			//点9图
 			if(texture.isNine()){
 				Rect rect = texture.getNineRect();
-				builder.append("  split: "+ rect.left+", "+rect.top+", "+ (rect.right) + ", "+(rect.bottom)+"\n");
+				builder.append("  split: "+ rect.left+", "+rect.right+", "+ (rect.top) + ", "+(rect.bottom)+"\n");
 				builder.append("  pad: "+ rect.left+", "+rect.top+", "+ (rect.right) + ", "+(rect.bottom)+"\n");
 			}
 			

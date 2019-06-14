@@ -3,8 +3,8 @@
 	xmlns:tools="http://schemas.android.com/tools"
 
 	package="com.xl.texturepacker"
-    android:versionCode="2"
-    android:versionName="1.2" >
+    android:versionCode="3"
+    android:versionName="1.3" >
 
     <uses-sdk 
         android:minSdkVersion="14" 

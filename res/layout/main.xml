@@ -14,11 +14,11 @@
 			android:layout_width="wrap_content"
 			android:text="图片包目录："/>
 
-		<EditText
+		<com.xl.view.FileSelectView
 			android:layout_height="wrap_content"
 			android:layout_width="match_parent"
 			android:ems="10"
-			android:id="@+id/edit_input"
+			android:id="@+id/filelist_input"
 			android:hint="inputDir"/>
 
 		<TextView

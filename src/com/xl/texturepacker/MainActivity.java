@@ -32,6 +32,8 @@ import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import com.xl.game.tool.ViewTool;
 import android.widget.EditText;
+import com.xl.view.FileListView;
+import com.xl.view.FileSelectView;
 
 public class MainActivity extends Activity implements View.OnClickListener
 {
@@ -63,7 +65,8 @@ public class MainActivity extends Activity implements View.OnClickListener
 	
 	//字体路径 文字大小 位移 颜色 文件名
 	TextView text_fileName;
-	TextView text_input,text_output;
+	FileSelectView fileView;
+	TextView text_output;
 	TextView text_width, text_height;
     SharedPreferencesUtil preference;
 	
@@ -76,7 +79,8 @@ public class MainActivity extends Activity implements View.OnClickListener
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
 		
-		text_input = (TextView) findViewById(R.id.edit_input);
+		fileView = (FileSelectView) findViewById(R.id.filelist_input);
+		fileView.selectDir();
 		text_output = (TextView) findViewById(R.id.edit_output);
 		text_width = (TextView) findViewById(R.id.edit_width);
 		text_height = (TextView) findViewById(R.id.edit_height);
@@ -93,7 +97,7 @@ public class MainActivity extends Activity implements View.OnClickListener
 	protected void onStart()
 	{
 		// TODO: Implement this method
-		text_input.setText(preference.getString("input",null));
+		fileView.setPath(preference.getString("input",null));
 		text_output.setText(preference.getString("output",null));
 		text_fileName.setText(preference.getString("name","packer"));
 		text_width.setText(preference.getString("width","1024"));
@@ -105,7 +109,7 @@ public class MainActivity extends Activity implements View.OnClickListener
 	@Override
 	protected void onStop()
 	{
-		preference.setString("input",text_input.getText().toString());
+		preference.setString("input", fileView.getPath().toString());
 		preference.setString("output",text_output.getText().toString());
 		preference.setString("width", text_width.getText().toString());
 		preference.setString("height",text_height.getText().toString());
@@ -185,7 +189,7 @@ public class MainActivity extends Activity implements View.OnClickListener
 
 	private void look()
 	{
-		String input = text_input.getText().toString();
+		String input = fileView.getPath().toString();
 		String output = text_output.getText().toString();
 		String name = text_fileName.getText().toString();
 		int width = Str.atoi(text_width.getText().toString());
@@ -239,7 +243,7 @@ public class MainActivity extends Activity implements View.OnClickListener
 	
 	private void save()
 	{
-		String input = text_input.getText().toString();
+		String input = fileView.getPath().toString();
 		String output = text_output.getText().toString();
 		String name = text_fileName.getText().toString();
 		int width = Str.atoi(text_width.getText().toString());
