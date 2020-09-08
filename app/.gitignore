@@ -1,3 +1,5 @@
+/build
+/app/release
 *.iml
 .gradle
 /local.properties
@@ -8,9 +10,8 @@
 /.idea/navEditor.xml
 /.idea/assetWizardSettings.xml
 .DS_Store
-/build
 /captures
 .externalNativeBuild
 .cxx
 local.properties
-/app/release
+/bin
