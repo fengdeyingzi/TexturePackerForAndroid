@@ -32,7 +32,7 @@ import android.util.Log;
  * @version 1.0.0
  * 
  */
-public class XLApplication extends Application
+public class PackerApplication extends Application
 {
 	private WindowManager.LayoutParams windowParams = new WindowManager.LayoutParams();
 	public SharedPreferences sharedPreferences;
@@ -47,7 +47,7 @@ public class XLApplication extends Application
 		//public static String URL="http://www.pgyer.com/QTBW";
 	
 //实现悬浮窗到状态栏
-	public XLApplication()
+	public PackerApplication()
 	{
 		windowParams.flags = WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_FULLSCREEN | WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN;
 	}
