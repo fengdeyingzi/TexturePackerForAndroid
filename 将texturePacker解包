@@ -1,0 +1,100 @@
+下面用java根据这个文件将大图还原成小图
+
+[java] view plaincopy
+public static void toPNG(String pathTxt,String pathPNG,String OUT)  
+    {  
+        ArrayList<String> name=new ArrayList<String>();  
+        ArrayList<String> xy=new ArrayList<String>();  
+        ArrayList<String> size=new ArrayList<String>();  
+        try {  
+            String encoding = "GBK";  
+            File file = new File(pathTxt);  
+            if (file.isFile() && file.exists()) { // 判断文件是否存在  
+                InputStreamReader read = new InputStreamReader(  
+                        new FileInputStream(file), encoding);// 考虑到编码格式  
+                BufferedReader bufferedReader = new BufferedReader(read);  
+                String lineTxt = null;  
+                int lineNum=0,lineNum2=0;  
+                while ((lineTxt = bufferedReader.readLine()) != null) {  
+                    lineNum++;  
+                    if(lineNum2>0)  
+                        lineNum2++;  
+                    if(lineNum==5)  
+                        lineNum2=1;  
+                    if(lineNum%7==5)  
+                        name.add(lineTxt);  
+                    if(lineNum2%7==3)  
+                        xy.add(lineTxt);  
+                    if(lineNum2%7==4)  
+                        size.add(lineTxt);            
+                }  
+                read.close();  
+            } else {  
+                System.out.println("找不到指定的文件");  
+            }  
+            BufferedImage image = (BufferedImage)ImageIO.read(new File(pathPNG));  
+            for(int i=0;i<name.size();i++)  
+            {  
+                String p1=name.get(i),p2=xy.get(i),p3=size.get(i);  
+              
+                int x=0,y=0,w=0,h=0,flag=0;  
+                for(int j=0;j<p2.length();j++)  
+                {  
+                    if(p2.charAt(j)<='9' && p2.charAt(j)>='0' )  
+                    {  
+                        if(flag==0)  
+                        {  
+                            x=x*10+p2.charAt(j)-'0';  
+                        }  
+                        else  
+                        {  
+                            y=y*10+p2.charAt(j)-'0';  
+                        }  
+                    }  
+                    if(p2.charAt(j)==',')  
+                        flag=1;  
+                      
+                }  
+                flag=0;  
+                for(int j=0;j<p3.length();j++)  
+                {  
+                    if(p3.charAt(j)<='9' && p3.charAt(j)>='0' )  
+                    {  
+                        if(flag==0)  
+                            w=w*10+p3.charAt(j)-'0';  
+                        else  
+                            h=h*10+p3.charAt(j)-'0';  
+                    }  
+                    if(p3.charAt(j)==',')  
+                        flag=1;  
+                      
+                }  
+                  
+                File f=new File(OUT);  
+                if(!f.exists())  
+                    f.mkdirs();  
+                ImageIO.write(image.getSubimage(x,y,w,h),"png",new FileOutputStream(OUT+"/"+p1+".png"));  
+                System.out.println(p1+":finished");  
+            }  
+              
+        } catch (Exception e) {  
+            System.out.println("读取文件内容出错");  
+            e.printStackTrace();  
+        }  
+          
+    }  
+
+
+
+
+
+
+使用方法。直接调用
+
+toPNG("d:/card.txt","d:/card.png","d:/s");  
+第一个参数是文本参数文件，不一定是txt后缀。不同软件生成不一样，只要用记事本打开内容跟上面那个txt一样就行。
+第二个参数是大图文件
+
+第三个参数是输出的地方。最后面不要再加"/"了；路径是自动创建的
+
+我这里是测试成功的。如有疑问请留言
